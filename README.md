@@ -25,5 +25,3 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Подробности, адреса сервисов и распределение задач приведены в
-[`smart-city/README.md`](smart-city/README.md) и [`PLAN.md`](PLAN.md).
