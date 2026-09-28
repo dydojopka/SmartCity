@@ -1,0 +1,32 @@
+# Локальные файлы
+/task.md
+/AGENTS.md
+/PLAN.md
+
+# Секреты и локальное окружение
+.env
+**/.env
+!.env.example
+!**/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# Frontend
+node_modules/
+dist/
+
+# Локальные базы данных и сгенерированные данные
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# IDE и OS файлы
+.idea/
+.vscode/
+.DS_Store
