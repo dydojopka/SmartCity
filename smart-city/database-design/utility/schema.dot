@@ -1,0 +1,19 @@
+digraph utility_schema {
+  graph [rankdir=LR, bgcolor="transparent"];
+  node [shape=plain fontname="Arial"];
+
+  issues [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>issues</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">user_id: UUID (Identity reference)</TD></TR>
+      <TR><TD ALIGN="LEFT">title: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">description: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">category: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">address: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">status: NEW | IN_PROGRESS | RESOLVED | REJECTED</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+      <TR><TD ALIGN="LEFT">updated_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+}
