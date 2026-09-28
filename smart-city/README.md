@@ -14,7 +14,8 @@
 - зафиксированный API-контракт;
 - отдельные задания для трёх участников.
 
-Предметные endpoints из задания пока не реализованы.
+Identity и Utility Service реализованы. Transport, Billing, Environment и
+Notification пока содержат только технический каркас.
 
 ## Быстрый запуск
 
@@ -35,6 +36,41 @@ Swagger сервисов:
 - Notification: <http://localhost:8006/docs>
 
 Проверка состояния выполняется по пути `/health` на соответствующем порту.
+
+## Тестовые учётные записи
+
+Все тестовые учётные записи создаются при первом старте Identity Service. Пароль
+для всех: `demo12345`.
+
+| Роль | Email | UUID |
+|---|---|---|
+| Пользователь | `user@smartcity.local` | `00000000-0000-0000-0000-000000000001` |
+| Оператор | `operator@smartcity.local` | `00000000-0000-0000-0000-000000000002` |
+| Администратор | `admin@smartcity.local` | `00000000-0000-0000-0000-000000000003` |
+
+## Проверка сервисов
+
+```bash
+for p in 8001 8002 8003 8004 8005 8006; do
+  curl --fail "http://localhost:$p/health"
+done
+```
+
+Тесты backend запускаются отдельно для каждого сервиса:
+
+```bash
+cd services/identity-service
+python -m pip install -r requirements.txt
+pytest -q
+```
+
+Для frontend:
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
 
 ## Командная работа
 
