@@ -1,0 +1,31 @@
+digraph environment_schema {
+  graph [rankdir=LR, bgcolor="transparent"];
+  node [shape=plain fontname="Arial"];
+
+  sensors [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>sensors</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT">name: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">type: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">location: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">status: ACTIVE | INACTIVE | MAINTENANCE</TD></TR>
+      <TR><TD ALIGN="LEFT">last_seen_at: DATETIME</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME</TD></TR>
+    </TABLE>
+  >];
+
+  sensor_readings [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>sensor_readings</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> sensor_id: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT">value: NUMERIC</TD></TR>
+      <TR><TD ALIGN="LEFT">unit: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">measured_at: DATETIME</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME</TD></TR>
+    </TABLE>
+  >];
+
+  sensors -> sensor_readings [label="1:N"];
+}

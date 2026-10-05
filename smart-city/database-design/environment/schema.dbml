@@ -1,0 +1,18 @@
+Table sensors {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  type varchar(100) [not null]
+  location varchar(255)
+  status varchar(20) [not null, default: 'ACTIVE']
+  last_seen_at datetime
+  created_at datetime [not null]
+}
+
+Table sensor_readings {
+  id integer [pk, increment]
+  sensor_id integer [not null, ref: > sensors.id]
+  value numeric [not null]
+  unit varchar(50)
+  measured_at datetime [not null]
+  created_at datetime [not null]
+}

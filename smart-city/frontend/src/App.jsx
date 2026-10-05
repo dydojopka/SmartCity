@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import UsersPage from "./features/users/UsersPage.jsx";
+import TransportPage from "./features/transport/TransportPage.jsx";
+import ParkingPage from "./features/parking/ParkingPage.jsx";
+import UtilityIssuesPage from "./features/utility/UtilityIssuesPage.jsx";
+import SensorsPage from "./features/sensors/SensorsPage.jsx";
+import InvoicesPage from "./features/billing/InvoicesPage.jsx";
 
 import { API_URLS, apiFetch, getToken, setToken } from "./api.js";
 
@@ -221,6 +227,54 @@ export default function App() {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Route
+  path="/users"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <UsersPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/transport"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <TransportPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/parking"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <ParkingPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/utility"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <UtilityIssuesPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/sensors"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <SensorsPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/invoices"
+  element={
+    <ProtectedRoute currentUser={currentUser} loading={loading}>
+      <InvoicesPage currentUser={currentUser} />
+    </ProtectedRoute>
+  }
+/>
     </Layout>
   );
 }
