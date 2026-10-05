@@ -1,0 +1,46 @@
+digraph billing_schema {
+  graph [rankdir=LR, bgcolor="transparent"];
+  node [shape=plain fontname="Arial"];
+
+  invoices [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>invoices</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">user_id: UUID (Identity reference)</TD></TR>
+      <TR><TD ALIGN="LEFT">amount_cents: INTEGER &gt; 0</TD></TR>
+      <TR><TD ALIGN="LEFT">status: UNPAID | PAID | CANCELLED</TD></TR>
+      <TR><TD ALIGN="LEFT">description: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">due_date: DATETIME</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+      <TR><TD ALIGN="LEFT">updated_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  payments [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>payments</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> invoice_id: UUID → invoices.id</TD></TR>
+      <TR><TD ALIGN="LEFT">user_id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">amount_cents: INTEGER &gt; 0</TD></TR>
+      <TR><TD ALIGN="LEFT">status: PENDING | SUCCESS | FAILED</TD></TR>
+      <TR><TD ALIGN="LEFT">idempotency_key: TEXT UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT">external_event_id: TEXT UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+      <TR><TD ALIGN="LEFT">updated_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  webhook_events [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>webhook_events</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">external_event_id: TEXT UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT">event_type: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">payload: JSON</TD></TR>
+      <TR><TD ALIGN="LEFT">processed_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  invoices -> payments [label="1 : N"];
+}

@@ -1,0 +1,48 @@
+Table vehicles {
+  id varchar(36) [pk, note: 'UUID']
+  plate_number varchar(20) [not null, unique]
+  model varchar(100) [not null]
+  latitude float [not null]
+  longitude float [not null]
+  status varchar(20) [not null, default: 'AVAILABLE', note: 'AVAILABLE, IN_USE, MAINTENANCE']
+  created_at datetime [not null]
+
+  Indexes {
+    plate_number [unique]
+    status
+  }
+}
+
+Table parkings {
+  id varchar(36) [pk, note: 'UUID']
+  name varchar(200) [not null]
+  address varchar(300) [not null]
+  latitude float [not null]
+  longitude float [not null]
+  total_spaces integer [not null]
+  available_spaces integer [not null]
+  price_per_hour_cents integer [not null, default: 0]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    available_spaces
+  }
+
+  Note: 'Проверка инварианта 0 <= available_spaces <= total_spaces выполняется на уровне приложения'
+}
+
+Table reservations {
+  id varchar(36) [pk, note: 'UUID']
+  parking_id varchar(36) [not null, ref: > parkings.id]
+  user_id varchar(36) [not null, note: 'UUID из Identity Service; внешнего ключа нет']
+  status varchar(20) [not null, default: 'ACTIVE', note: 'ACTIVE, CANCELLED, EXPIRED']
+  created_at datetime [not null]
+  expires_at datetime
+
+  Indexes {
+    parking_id
+    user_id
+    status
+  }
+}

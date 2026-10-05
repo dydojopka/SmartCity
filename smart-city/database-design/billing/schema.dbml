@@ -1,0 +1,47 @@
+Table invoices {
+  id varchar(36) [pk, note: 'UUID']
+  user_id varchar(36) [not null, note: 'UUID из Identity Service; внешнего ключа нет']
+  amount_cents integer [not null, note: 'Сумма в копейках']
+  status varchar(20) [not null, default: 'UNPAID', note: 'UNPAID, PAID, CANCELLED']
+  description varchar(300)
+  due_date datetime
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    user_id
+    status
+  }
+}
+
+Table payments {
+  id varchar(36) [pk, note: 'UUID']
+  invoice_id varchar(36) [not null, ref: > invoices.id]
+  user_id varchar(36) [not null]
+  amount_cents integer [not null]
+  status varchar(20) [not null, default: 'PENDING', note: 'PENDING, SUCCESS, FAILED']
+  idempotency_key varchar(128) [not null, unique]
+  external_event_id varchar(128) [unique, note: 'ID события от платёжного провайдера']
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    invoice_id
+    user_id
+    status
+    idempotency_key [unique]
+    external_event_id [unique]
+  }
+}
+
+Table webhook_events {
+  id varchar(36) [pk, note: 'UUID']
+  external_event_id varchar(128) [not null, unique]
+  event_type varchar(50) [not null]
+  payload json [not null]
+  processed_at datetime [not null]
+
+  Indexes {
+    external_event_id [unique]
+  }
+}

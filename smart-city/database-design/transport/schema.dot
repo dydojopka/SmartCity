@@ -1,0 +1,47 @@
+digraph transport_schema {
+  graph [rankdir=LR, bgcolor="transparent"];
+  node [shape=plain fontname="Arial"];
+
+  vehicles [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>vehicles</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">plate_number: TEXT UNIQUE</TD></TR>
+      <TR><TD ALIGN="LEFT">model: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">latitude: REAL</TD></TR>
+      <TR><TD ALIGN="LEFT">longitude: REAL</TD></TR>
+      <TR><TD ALIGN="LEFT">status: AVAILABLE | IN_USE | MAINTENANCE</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  parkings [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>parkings</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT">name: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">address: TEXT</TD></TR>
+      <TR><TD ALIGN="LEFT">latitude: REAL</TD></TR>
+      <TR><TD ALIGN="LEFT">longitude: REAL</TD></TR>
+      <TR><TD ALIGN="LEFT">total_spaces: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT">available_spaces: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT">price_per_hour_cents: INTEGER</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+      <TR><TD ALIGN="LEFT">updated_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  reservations [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>reservations</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B> id: UUID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> parking_id: UUID → parkings.id</TD></TR>
+      <TR><TD ALIGN="LEFT">user_id: UUID (Identity reference)</TD></TR>
+      <TR><TD ALIGN="LEFT">status: ACTIVE | CANCELLED | EXPIRED</TD></TR>
+      <TR><TD ALIGN="LEFT">created_at: DATETIME UTC</TD></TR>
+      <TR><TD ALIGN="LEFT">expires_at: DATETIME UTC</TD></TR>
+    </TABLE>
+  >];
+
+  parkings -> reservations [label="1 : N"];
+}
