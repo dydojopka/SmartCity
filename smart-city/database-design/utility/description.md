@@ -1,20 +1,11 @@
-# Utility Service database
+# БД Utility
 
-## `issues`
+Файл: `/data/utility.db`. Таблица `issues` хранит UUID заявки и пользователя,
+тему, описание, категорию, адрес, статус, ключ повторного запроса и даты в UTC.
 
-Хранит заявки ЖКХ. Таблица принадлежит только Utility Service. Поле `user_id`
-содержит UUID пользователя из Identity Service, но внешнего ключа на Identity
-DB нет: связь между сервисами выполняется только через HTTP и JWT.
+- Статусы: `NEW`, `IN_PROGRESS`, `RESOLVED`, `REJECTED`.
+- Индексы по пользователю, категории и статусу ускоряют выборку заявок.
+- Уникальная пара `(user_id, request_key)` предотвращает повторное создание.
+- `user_id` - внешний UUID; связей с Identity DB нет.
 
-| Поле | Назначение |
-|---|---|
-| `id` | первичный ключ UUID заявки |
-| `user_id` | автор заявки |
-| `title`, `description` | описание проблемы |
-| `category` | категория заявки |
-| `address` | адрес проблемы |
-| `status` | `NEW`, `IN_PROGRESS`, `RESOLVED`, `REJECTED` |
-| `created_at`, `updated_at` | время создания и последнего изменения в UTC |
-
-Индексы по `user_id`, `category` и `status` поддерживают выдачу заявок и
-будущие фильтры.
+Материалы: [SQL](schema.sql), [DBML](schema.dbml), [диаграмма](schema.png).

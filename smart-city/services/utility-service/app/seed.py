@@ -1,11 +1,10 @@
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import Issue
 
 
 def seed_database(session: Session) -> None:
-    if session.scalar(select(Issue.id).limit(1)) is not None:
+    if session.get(Issue, "90000000-0000-0000-0000-000000000001") is not None:
         return
 
     session.add(
