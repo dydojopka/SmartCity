@@ -15,8 +15,6 @@
 | Шилов Данил | Transport, Billing, транзакции и схемы их БД |
 | Белоножко Иван | Environment, Notification, предметные страницы и схемы их БД |
 
-Репозиторий: <https://github.com/dydojopka/SmartCity>.
-
 ## Запуск
 
 ```bash
