@@ -1,7 +1,7 @@
 :root {
   color: #172033;
   background: #f3f6fb;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
   line-height: 1.5;
 }
 
@@ -10,7 +10,9 @@ body {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
 }
 
@@ -32,6 +34,7 @@ input {
 }
 
 nav {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -70,18 +73,6 @@ nav a.active {
   box-shadow: 0 8px 24px rgb(23 32 51 / 8%);
 }
 
-.hero {
-  margin-top: 72px;
-}
-
-.eyebrow {
-  margin: 0;
-  color: #2457d6;
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
 .button {
   display: inline-block;
   margin-top: 8px;
@@ -115,7 +106,9 @@ label {
   font-weight: 600;
 }
 
-input {
+input,
+textarea,
+select {
   box-sizing: border-box;
   width: 100%;
   padding: 9px 10px;
@@ -172,4 +165,107 @@ dd {
 
 a {
   color: #2457d6;
+}
+
+.card { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid #dbe2ef; }
+td { overflow-wrap: anywhere; min-width: 85px; }
+textarea { min-height: 90px; }
+.secondary { background: #516078; }
+code { overflow-wrap: anywhere; }
+
+.overview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.overview-heading h1 {
+  margin: 0;
+}
+
+.overview-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #dbe2ef;
+}
+
+.overview-section h2 {
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+}
+
+.overview-section h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.overview-columns,
+.service-directory {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.overview-columns p,
+.service-directory p {
+  margin: 8px 0 16px;
+}
+
+.overview-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-list,
+.parking-overview,
+.service-directory {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.overview-list li + li {
+  margin-top: 12px;
+}
+
+.overview-list span {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.parking-overview li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.parking-overview p {
+  margin: 4px 0;
+}
+
+.home-actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .overview-heading,
+  .parking-overview li {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .overview-columns,
+  .service-directory {
+    grid-template-columns: 1fr;
+  }
 }
