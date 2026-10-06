@@ -1,18 +1,11 @@
-# Notification Service database
+# БД Notification
 
-## `notifications`
+Файл: `/data/notification.db`. Таблица `notifications` хранит UUID уведомления,
+UUID пользователя при наличии, получателя, канал, тему, текст, статус и даты в UTC.
 
-Хранит уведомления. При создании статус `PENDING`, после имитации отправки —
-`SENT`. `sent_at` заполняется при успешной отправке.
+- Каналы: `EMAIL`, `SMS`, `PUSH`; статусы: `PENDING`, `SENT`, `FAILED`.
+- Индексы по статусу и времени создания упрощают выборку истории.
+- При демонстрационной отправке сохраняются `SENT` и `sent_at`, сообщение пишется в лог.
+- Связей с БД Identity и других сервисов нет.
 
-Поля:
-
-- `id` — первичный ключ;
-- `user_id` — UUID пользователя, если есть;
-- `recipient` — получатель;
-- `channel` — канал: EMAIL, PUSH, SMS;
-- `subject` — тема;
-- `message` — текст;
-- `status` — PENDING, SENT, FAILED;
-- `created_at` — время создания;
-- `sent_at` — время отправки.
+Материалы: [SQL](schema.sql), [DBML](schema.dbml), [диаграмма](schema.png).

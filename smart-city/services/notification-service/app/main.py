@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, status
+from fastapi.exceptions import RequestValidationError
+from app.errors import validation_error
 from sqlalchemy.orm import Session
 
 from app.database import get_db, init_database
@@ -25,6 +27,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Notification Service", lifespan=lifespan)
+app.add_exception_handler(RequestValidationError, validation_error)
 
 
 @app.get("/health")
@@ -43,7 +46,7 @@ def create_notification(
     db: Annotated[Session, Depends(get_db)],
 ) -> Notification:
     notification = Notification(
-        user_id=payload.user_id,
+        user_id=str(payload.user_id) if payload.user_id is not None else None,
         recipient=payload.recipient,
         channel=payload.channel,
         subject=payload.subject,
@@ -62,11 +65,11 @@ def create_notification(
     )
 
     # Имитация отправки. Служебный токен сюда не попадает.
-    logger.info("notification_sent id=%s", notification.id)
 
     notification.status = "SENT"
     notification.sent_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(notification)
 
+    logger.info("notification_sent id=%s", notification.id)
     return notification

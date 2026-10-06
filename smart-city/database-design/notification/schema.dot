@@ -1,19 +1,5 @@
-digraph notification_schema {
-  graph [rankdir=LR, bgcolor="transparent"];
-  node [shape=plain fontname="Arial"];
-
-  notifications [label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
-      <TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>notifications</B></FONT></TD></TR>
-      <TR><TD ALIGN="LEFT"><B>PK</B> id: INTEGER</TD></TR>
-      <TR><TD ALIGN="LEFT">user_id: TEXT</TD></TR>
-      <TR><TD ALIGN="LEFT">recipient: TEXT</TD></TR>
-      <TR><TD ALIGN="LEFT">channel: TEXT</TD></TR>
-      <TR><TD ALIGN="LEFT">subject: TEXT</TD></TR>
-      <TR><TD ALIGN="LEFT">message: TEXT</TD></TR>
-      <TR><TD ALIGN="LEFT">status: PENDING | SENT | FAILED</TD></TR>
-      <TR><TD ALIGN="LEFT">created_at: DATETIME</TD></TR>
-      <TR><TD ALIGN="LEFT">sent_at: DATETIME</TD></TR>
-    </TABLE>
-  >];
+digraph schema {
+graph [rankdir=LR, bgcolor="white"];
+node [shape=plain fontname="Arial"];
+notifications [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7"><TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>notifications</B></FONT></TD></TR><TR><TD ALIGN="LEFT">id: VARCHAR(36) pk, not null</TD></TR><TR><TD ALIGN="LEFT">user_id: VARCHAR(36) nullable</TD></TR><TR><TD ALIGN="LEFT">recipient: VARCHAR(255) not null</TD></TR><TR><TD ALIGN="LEFT">channel: VARCHAR(50) not null</TD></TR><TR><TD ALIGN="LEFT">subject: VARCHAR(255) nullable</TD></TR><TR><TD ALIGN="LEFT">message: TEXT not null</TD></TR><TR><TD ALIGN="LEFT">status: VARCHAR(20) not null</TD></TR><TR><TD ALIGN="LEFT">created_at: DATETIME not null</TD></TR><TR><TD ALIGN="LEFT">sent_at: DATETIME nullable</TD></TR></TABLE>>];
 }
