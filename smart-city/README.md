@@ -70,7 +70,6 @@ Transport, Utility и Billing вызывают Notification по HTTP после
 - [Форматы запросов, доступ и статусы](docs/API_CONTRACT.md).
 - [SQL, DBML, диаграммы и описания БД](database-design/).
 - [Архив схем](database-design.zip).
-- [Материалы сдачи](docs/VALIDATION.md).
 
 Ашроев Евгений - Identity, Utility и интеграция;
 Шилов Данил - Transport и Billing;
