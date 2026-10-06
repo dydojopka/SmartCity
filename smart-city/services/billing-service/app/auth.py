@@ -1,4 +1,5 @@
 import os
+from uuid import UUID
 from dataclasses import dataclass
 from typing import Annotated, Callable
 
@@ -30,17 +31,21 @@ def get_current_user(
             credentials.credentials,
             os.getenv("JWT_SECRET", "development-jwt-secret"),
             algorithms=["HS256"],
+            options={"require": ["sub", "role", "exp"]},
         )
         user_id = payload["sub"]
         role = payload["role"]
-    except (jwt.InvalidTokenError, KeyError, TypeError):
+        UUID(user_id)
+        if role not in {"USER", "OPERATOR", "ADMIN"}:
+            raise ValueError("Invalid role")
+    except (jwt.InvalidTokenError, KeyError, TypeError, ValueError, AttributeError, OverflowError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Недействительный JWT",
             headers={"WWW-Authenticate": "Bearer"},
         ) from None
 
-    return CurrentUser(id=str(user_id), role=str(role))
+    return CurrentUser(id=str(UUID(user_id)), role=role)
 
 
 def require_roles(*allowed_roles: str) -> Callable:

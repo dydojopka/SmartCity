@@ -62,6 +62,7 @@ services:
       DATABASE_URL: sqlite:////data/billing.db
       JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
       SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      DEMO_PAYMENTS_ENABLED: ${DEMO_PAYMENTS_ENABLED:-true}
       NOTIFICATION_URL: http://notification-service:8000
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
     ports:

@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
+from uuid import UUID
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-InvoiceStatus = Literal["UNPAID", "PAID", "CANCELLED"]
-PaymentStatus = Literal["PENDING", "SUCCESS", "FAILED"]
+InvoiceStatus = Literal["PENDING", "PAID", "CANCELLED"]
+PaymentStatus = Literal["CREATED", "SUCCEEDED", "FAILED"]
 
 
 class InvoiceResponse(BaseModel):
@@ -15,13 +16,14 @@ class InvoiceResponse(BaseModel):
     amount_cents: int
     status: InvoiceStatus
     description: str | None
-    due_date: datetime | None
+    due_date: date | None
+    paid_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
 
 class PaymentCreateRequest(BaseModel):
-    invoice_id: str = Field(min_length=1)
+    invoice_id: UUID
     idempotency_key: str = Field(min_length=1, max_length=128)
 
 
@@ -41,9 +43,4 @@ class PaymentResponse(BaseModel):
 
 class PaymentWebhookRequest(BaseModel):
     external_event_id: str = Field(min_length=1, max_length=128)
-    payment_id: str = Field(min_length=1)
-
-
-class PaymentWebhookResponse(BaseModel):
-    status: str
-    payment_id: str | None = None
+    payment_id: UUID

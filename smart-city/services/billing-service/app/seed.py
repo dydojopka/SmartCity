@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from datetime import date
 from sqlalchemy.orm import Session
 
 from app.models import Invoice
@@ -13,37 +13,35 @@ DEMO_INVOICES = (
         "id": "50000000-0000-0000-0000-000000000001",
         "user_id": USER_IVAN,
         "amount_cents": 150000,
-        "status": "UNPAID",
+        "status": "PENDING",
         "description": "Коммунальные услуги за месяц",
     },
     {
         "id": "50000000-0000-0000-0000-000000000002",
         "user_id": USER_IVAN,
         "amount_cents": 50000,
-        "status": "UNPAID",
+        "status": "PENDING",
         "description": "Парковочный абонемент",
     },
     {
         "id": "50000000-0000-0000-0000-000000000003",
         "user_id": USER_ANNA,
         "amount_cents": 99000,
-        "status": "UNPAID",
+        "status": "PENDING",
         "description": "Электроэнергия",
     },
     {
         "id": "50000000-0000-0000-0000-000000000004",
         "user_id": USER_PAVEL,
         "amount_cents": 250000,
-        "status": "UNPAID",
+        "status": "PENDING",
         "description": "Аренда офиса",
     },
 )
 
 
 def seed_database(session: Session) -> None:
-    if session.scalar(select(Invoice.id).limit(1)) is not None:
-        return
-
     for invoice in DEMO_INVOICES:
-        session.add(Invoice(**invoice))
+        if session.get(Invoice, invoice["id"]) is None:
+            session.add(Invoice(**invoice, due_date=date(2026, 10, 10)))
     session.commit()
