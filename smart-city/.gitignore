@@ -5,6 +5,15 @@ __pycache__/
 .ruff_cache/
 .venv/
 
+# Local automated checks
+tests/
+scripts/test_*.py
+scripts/check_*.py
+scripts/browser_*.mjs
+scripts/http_smoke.py
+scripts/compose_resilience.py
+scripts/create_validation_config.py
+
 # Databases and local data
 *.db
 *.sqlite
