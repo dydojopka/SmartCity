@@ -1,49 +1,32 @@
-import { useEffect, useState } from "react";
-import { API_URLS, apiFetch } from "../../api.js";
+import { API_URLS } from "../../api.js";
+import { ListStatus, time, useApiList } from "../shared.jsx";
 
 export default function TransportPage() {
-  const [vehicles, setVehicles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  async function load() {
-    setLoading(true);
-    setError("");
-    try {
-      setVehicles(await apiFetch(API_URLS.transport, "/vehicles"));
-    } catch (e) {
-      setError(e.message || "Не удалось загрузить транспорт");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    load();
-  }, []);
-
-  if (loading) return <p>Загрузка транспорта...</p>;
-  if (error) return <p className="error" role="alert">{error}</p>;
-  if (!vehicles.length) return <p>Транспорт пока не добавлен.</p>;
+  const list = useApiList(API_URLS.transport, "/vehicles");
 
   return (
     <section className="card">
       <h1>Транспорт</h1>
+      <ListStatus list={list} empty="Транспорт пока не добавлен." />
       <table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Номер</th>
-            <th>Модель</th>
+            <th>Тип</th>
+            <th>Маршрут</th>
+            <th>Координаты</th>
+            <th>Обновлено</th>
             <th>Статус</th>
           </tr>
         </thead>
         <tbody>
-          {vehicles.map((v) => (
+          {list.data.map((v) => (
             <tr key={v.id}>
               <td>{v.id}</td>
-              <td>{v.number}</td>
-              <td>{v.model}</td>
+              <td>{v.type}</td>
+              <td>{v.route_number}</td>
+              <td>{v.latitude}, {v.longitude}</td>
+              <td>{time(v.updated_at)}</td>
               <td>{v.status}</td>
             </tr>
           ))}

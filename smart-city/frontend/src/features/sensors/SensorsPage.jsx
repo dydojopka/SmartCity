@@ -1,76 +1,42 @@
-import { useEffect, useState } from "react";
-import { API_URLS, apiFetch } from "../../api.js";
+import { useState } from "react";
+import { API_URLS } from "../../api.js";
+import { ListStatus, time, useApiList } from "../shared.jsx";
 
 export default function SensorsPage() {
-  const [sensors, setSensors] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const [readings, setReadings] = useState([]);
-  const [loadingSensors, setLoadingSensors] = useState(true);
-  const [loadingReadings, setLoadingReadings] = useState(false);
-  const [error, setError] = useState("");
-
-  async function loadSensors() {
-    setLoadingSensors(true);
-    setError("");
-    try {
-      setSensors(await apiFetch(API_URLS.environment, "/sensors"));
-    } catch (e) {
-      setError(e.message || "Не удалось загрузить датчики");
-    } finally {
-      setLoadingSensors(false);
-    }
-  }
-
-  async function loadReadings(id) {
-    setLoadingReadings(true);
-    setError("");
-    try {
-      setReadings(await apiFetch(API_URLS.environment, `/sensors/${id}/data`));
-    } catch (e) {
-      setError(e.message || "Не удалось загрузить показания");
-    } finally {
-      setLoadingReadings(false);
-    }
-  }
-
-  useEffect(() => {
-    loadSensors();
-  }, []);
-
-  useEffect(() => {
-    if (selectedId) {
-      loadReadings(selectedId);
-    } else {
-      setReadings([]);
-    }
-  }, [selectedId]);
-
-  if (loadingSensors) return <p>Загрузка датчиков...</p>;
-  if (error) return <p className="error" role="alert">{error}</p>;
-  if (!sensors.length) return <p>Датчиков пока нет.</p>;
+  const sensors = useApiList(API_URLS.environment, "/sensors");
+  const readings = useApiList(API_URLS.environment, selectedId ? `/sensors/${selectedId}/data` : null);
+  const selected = sensors.data.find((sensor) => sensor.id === selectedId);
 
   return (
     <section className="card">
       <h1>Датчики</h1>
+      <ListStatus list={sensors} empty="Датчиков пока нет." />
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Название</th>
             <th>Тип</th>
+            <th>Единица</th>
+            <th>Координаты</th>
+            <th>Последний контакт</th>
             <th>Статус</th>
             <th>Действие</th>
           </tr>
         </thead>
         <tbody>
-          {sensors.map((s) => (
+          {sensors.data.map((s) => (
             <tr key={s.id}>
               <td>{s.id}</td>
               <td>{s.name}</td>
               <td>{s.type}</td>
+              <td>{s.unit}</td>
+              <td>{s.latitude}, {s.longitude}</td>
+              <td>{time(s.last_seen_at)}</td>
               <td>{s.status}</td>
               <td>
-                <button className="button" onClick={() => setSelectedId(s.id)}>
+                <button className="button" onClick={() => selectedId === s.id ? readings.reload() : setSelectedId(s.id)}>
                   Показания
                 </button>
               </td>
@@ -82,9 +48,8 @@ export default function SensorsPage() {
       {selectedId && (
         <>
           <h2>Показания датчика #{selectedId}</h2>
-          {loadingReadings && <p>Загрузка показаний...</p>}
-          {!loadingReadings && !readings.length && <p>Показаний пока нет.</p>}
-          {!loadingReadings && readings.length > 0 && (
+          <ListStatus list={readings} empty="Показаний пока нет." />
+          {!readings.loading && readings.data.length > 0 && (
             <table>
               <thead>
                 <tr>
@@ -92,15 +57,17 @@ export default function SensorsPage() {
                   <th>Значение</th>
                   <th>Ед. изм.</th>
                   <th>Измерено</th>
+                  <th>Получено</th>
                 </tr>
               </thead>
               <tbody>
-                {readings.map((r) => (
+                {readings.data.map((r) => (
                   <tr key={r.id}>
                     <td>{r.id}</td>
                     <td>{r.value}</td>
-                    <td>{r.unit}</td>
-                    <td>{new Date(r.measured_at).toLocaleString()}</td>
+                    <td>{selected?.unit || "-"}</td>
+                    <td>{time(r.measured_at)}</td>
+                    <td>{time(r.received_at)}</td>
                   </tr>
                 ))}
               </tbody>

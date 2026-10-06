@@ -1,47 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { API_URLS, apiFetch } from "../../api.js";
+import { ActionStatus, ListStatus, useAction, useApiList, postOperation, pendingOperation } from "../shared.jsx";
 
-export default function UtilityIssuesPage() {
-  const [issues, setIssues] = useState([]);
-  const [form, setForm] = useState({
+export default function UtilityIssuesPage({ currentUser }) {
+  const list = useApiList(API_URLS.utility, "/issues");
+  const action = useAction();
+  const canUpdate = ["OPERATOR", "ADMIN"].includes(currentUser.role);
+  const storageKey = `issue-key:${currentUser.id}`;
+  const [form, setForm] = useState(() => {
+    const pending = pendingOperation(storageKey);
+    return pending?.body ? JSON.parse(pending.body) : {
     title: "",
     description: "",
     category: "",
     address: "",
+    };
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  async function load() {
-    setLoading(true);
-    setError("");
-    try {
-      setIssues(await apiFetch(API_URLS.utility, "/issues"));
-    } catch (e) {
-      setError(e.message || "Не удалось загрузить заявки ЖКХ");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function submit(event) {
     event.preventDefault();
-    setError("");
-    try {
-      await apiFetch(API_URLS.utility, "/issues", {
-        method: "POST",
-        body: JSON.stringify(form),
-      });
+    await action.run(async () => {
+      await postOperation(API_URLS.utility, "/issues", storageKey, form);
       setForm({ title: "", description: "", category: "", address: "" });
-      await load();
-    } catch (e) {
-      setError(e.message || "Не удалось создать заявку");
-    }
+      await list.reload();
+    }, "Заявка создана.");
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  async function updateStatus(id, status) {
+    await action.run(async () => {
+      await apiFetch(API_URLS.utility, `/issues/${id}`, { method: "PUT", body: JSON.stringify({ status }) });
+      await list.reload();
+    }, "Статус обновлён.");
+  }
 
   return (
     <section className="card">
@@ -80,16 +70,14 @@ export default function UtilityIssuesPage() {
             required
           />
         </label>
-        <button className="button" type="submit">
+        <button className="button" type="submit" disabled={action.pending}>
           Отправить
         </button>
       </form>
 
-      {loading && <p>Загрузка заявок...</p>}
-      {error && <p className="error" role="alert">{error}</p>}
-      {!loading && !issues.length && <p>Заявок пока нет.</p>}
-
-      {!loading && issues.length > 0 && (
+      <ListStatus list={list} empty="Заявок пока нет." />
+      <ActionStatus action={action} />
+      {list.data.length > 0 && (
         <table>
           <thead>
             <tr>
@@ -98,16 +86,20 @@ export default function UtilityIssuesPage() {
               <th>Категория</th>
               <th>Адрес</th>
               <th>Статус</th>
+              {canUpdate && <th>Изменить статус</th>}
             </tr>
           </thead>
           <tbody>
-            {issues.map((issue) => (
+            {list.data.map((issue) => (
               <tr key={issue.id}>
                 <td>{issue.id}</td>
                 <td>{issue.title}</td>
                 <td>{issue.category}</td>
                 <td>{issue.address}</td>
                 <td>{issue.status}</td>
+                {canUpdate && <td><select aria-label={`Статус заявки ${issue.title}`} value={issue.status} disabled={action.pending} onChange={(e) => updateStatus(issue.id, e.target.value)}>
+                  {["NEW", "IN_PROGRESS", "RESOLVED", "REJECTED"].map((status) => <option key={status}>{status}</option>)}
+                </select></td>}
               </tr>
             ))}
           </tbody>
