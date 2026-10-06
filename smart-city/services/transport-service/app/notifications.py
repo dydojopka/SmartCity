@@ -7,7 +7,7 @@ logger = logging.getLogger(os.getenv("SERVICE_NAME", "transport-service"))
 
 
 def notify_parking_reserved(
-    reservation_id: str, user_id: str, parking_name: str, expires_at: str
+    reservation_id: str, user_id: str, parking_name: str
 ) -> None:
     """Best-effort notification; the already committed reservation must remain intact."""
     try:
@@ -19,7 +19,7 @@ def notify_parking_reserved(
                 "channel": "PUSH",
                 "recipient": user_id,
                 "subject": "Парковка забронирована",
-                "message": f"Место на парковке {parking_name} забронировано до {expires_at}",
+                "message": f"Место на парковке {parking_name} забронировано",
             },
             timeout=3.0,
         )

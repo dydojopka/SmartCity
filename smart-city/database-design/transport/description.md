@@ -1,48 +1,16 @@
-# Transport Service database
+# БД Transport
 
-## `vehicles`
+Файл: `/data/transport.db`. Идентификаторы - UUID, даты - UTC.
 
-Список транспортных средств с текущими координатами. Используется публичным
-endpoint `GET /vehicles`.
-
-| Поле | Назначение |
+| Таблица | Назначение |
 |---|---|
-| `id` | первичный ключ UUID |
-| `plate_number` | государственный номер, уникальный |
-| `model` | модель транспорта |
-| `latitude`, `longitude` | координаты |
-| `status` | `AVAILABLE`, `IN_USE`, `MAINTENANCE` |
-| `created_at` | дата создания в UTC |
+| `vehicles` | Тип и маршрут транспорта, координаты, статус; номер и модель при наличии |
+| `parkings` | Название, адрес, координаты, вместимость, свободные места, тариф |
+| `reservations` | Парковка, UUID пользователя, статус брони, ключ повторного запроса и даты |
 
-## `parkings`
+Связь: `reservations.parking_id → parkings.id`; `user_id` - внешний UUID без FK в Identity.
+Свободные места ограничены диапазоном `0…total_spaces`, вместимость и тариф неотрицательны.
+Номер транспорта уникален; пара `(user_id, request_key)` защищает от повторной брони.
+Бронирование сохраняет запись и уменьшает остаток в одной транзакции.
 
-Парковочные зоны. `available_spaces` уменьшается атомарно в одной транзакции
-при бронировании.
-
-| Поле | Назначение |
-|---|---|
-| `id` | первичный ключ UUID |
-| `name`, `address` | название и адрес |
-| `latitude`, `longitude` | координаты |
-| `total_spaces` | всего мест |
-| `available_spaces` | свободных мест, не может стать отрицательным |
-| `price_per_hour_cents` | цена в копейках за час |
-| `created_at`, `updated_at` | служебные даты в UTC |
-
-Ограничения: `available_spaces >= 0` и `available_spaces <= total_spaces`.
-
-## `reservations`
-
-Бронирования парковок. `user_id` — UUID пользователя из Identity Service;
-внешнего ключа на Identity DB нет, связь только через JWT.
-
-| Поле | Назначение |
-|---|---|
-| `id` | первичный ключ UUID |
-| `parking_id` | ссылка на `parkings.id` |
-| `user_id` | UUID пользователя из Identity Service |
-| `status` | `ACTIVE`, `CANCELLED`, `EXPIRED` |
-| `created_at` | дата создания в UTC |
-| `expires_at` | срок действия брони |
-
-Индексы по `parking_id`, `user_id`, `status` поддерживают выдачу активных броней.
+Материалы: [SQL](schema.sql), [DBML](schema.dbml), [диаграмма](transport-diagram.png).
