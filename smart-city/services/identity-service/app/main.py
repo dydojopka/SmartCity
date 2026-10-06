@@ -7,6 +7,8 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from app.errors import validation_error
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -34,6 +36,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Identity Service", lifespan=lifespan)
+app.add_exception_handler(RequestValidationError, validation_error)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:5173").split(","),

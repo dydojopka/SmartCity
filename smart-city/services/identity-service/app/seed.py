@@ -31,9 +31,10 @@ DEMO_USERS = (
 
 
 def seed_database(session: Session) -> None:
-    if session.scalar(select(User.id).limit(1)) is not None:
-        return
-
     for user_data in DEMO_USERS:
+        if session.get(User, user_data["id"]) is not None:
+            continue
+        if session.scalar(select(User.id).where(User.email == user_data["email"])) is not None:
+            raise RuntimeError("Demo email belongs to another account; resolve without replacing the account")
         session.add(User(**user_data, password_hash=hash_password(DEMO_PASSWORD)))
     session.commit()

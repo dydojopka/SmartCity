@@ -1,13 +1,16 @@
+PRAGMA foreign_keys=ON;
+
 CREATE TABLE users (
-    id TEXT PRIMARY KEY,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'USER'
-        CHECK (role IN ('USER', 'OPERATOR', 'ADMIN')),
-    is_active INTEGER NOT NULL DEFAULT 1,
-    created_at DATETIME NOT NULL
+	id VARCHAR(36) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+	password_hash VARCHAR(255) NOT NULL,
+	first_name VARCHAR(100) NOT NULL,
+	last_name VARCHAR(100) NOT NULL,
+	role VARCHAR(20) NOT NULL,
+	is_active BOOLEAN NOT NULL,
+	created_at DATETIME NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT ck_user_role CHECK (role IN ('USER','OPERATOR','ADMIN'))
 );
 
-CREATE INDEX ix_users_email ON users (email);
+CREATE UNIQUE INDEX ix_users_email ON users (email);
