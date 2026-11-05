@@ -1,0 +1,7 @@
+course: Архитектура ПО
+sections:
+  - number: 2
+    title: Микросервисы
+assignment:
+  number: 3
+  title: Разработка экосистемы микросервисов "Умный город"
